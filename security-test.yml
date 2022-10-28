@@ -12,11 +12,11 @@ steps:
 - task: SonarCloudPrepare@1
   displayName: 'Prepare analysis configuration'
   inputs:
-    SonarCloud: 'SC'
-    organization: 'myorga'
+    SonarCloud: 'devops-test-sonar'
+    organization: 'devopstestazee'
     scannerMode: 'MSBuild'
-    projectKey: 'dotnet-core-on-azdo'
-    projectName: 'Sample .NET Core project with Azure DevOps'    
+    projectKey: '$projectkey'
+    projectName: '$projectname'
     
 - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
   displayName: 'Run Code Analysis'
