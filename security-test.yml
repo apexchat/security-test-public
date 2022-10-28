@@ -1,0 +1,39 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+  lfs: true
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare analysis configuration'
+  inputs:
+    SonarCloud: 'SC'
+    organization: 'myorga'
+    scannerMode: 'MSBuild'
+    projectKey: 'dotnet-core-on-azdo'
+    projectName: 'Sample .NET Core project with Azure DevOps'    
+    
+- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+  displayName: 'Run Code Analysis'
+  
+- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+  displayName: 'Publish Quality Gate Result'  
+    
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: '**/AzUrlShortener.sln'
+    arguments: '--output publish_output --configuration Release'
+    
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+  
+  
