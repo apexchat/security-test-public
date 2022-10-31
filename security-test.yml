@@ -32,8 +32,8 @@ steps:
     rootFolderOrFile: 'publish_output/'
     includeRootFolder: false  
   
-#- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-#  displayName: 'Publish Quality Gate Result'
+- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+  displayName: 'Publish Quality Gate Result'
     
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
