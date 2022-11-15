@@ -9,31 +9,43 @@ steps:
 - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
   lfs: true
 
-- task: SonarCloudPrepare@1
-  displayName: 'Prepare analysis configuration'
+- task: SonarQubePrepare@5
   inputs:
-    SonarCloud: 'devops-test-sonar'
-    organization: 'devopstestazee'
+    SonarQube: 'Sonarqube vm token'
     scannerMode: 'MSBuild'
-    projectKey: $(projectkey)
-    projectName: $(projectname)  
+    projectKey: 'test'
+    projectName: 'test'
+#- task: SonarCloudPrepare@1
+#  displayName: 'Prepare analysis configuration'
+#  inputs:
+#    SonarCloud: 'devops-test-sonar'
+#    organization: 'devopstestazee'
+#    scannerMode: 'MSBuild'
+#    projectKey: $(projectkey)
+#    projectName: $(projectname)  
     
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
     projects: '**/AzUrlShortener.sln'
     arguments: '--output publish_output --configuration Release'
-- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+
+- task: SonarQubeAnalyze@5
   displayName: 'Run Code Analysis'
+#- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+#  displayName: 'Run Code Analysis'
 
 - task: ArchiveFiles@2
   displayName: 'Archive files'
   inputs:
     rootFolderOrFile: 'publish_output/'
     includeRootFolder: false  
-  
-- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-  displayName: 'Publish Quality Gate Result'
+
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+#- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+#  displayName: 'Publish Quality Gate Result'
     
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
